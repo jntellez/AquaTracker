@@ -1,7 +1,7 @@
 {
   "name": "aquatracker",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,10 +9,14 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.0",
     "expo": "~52.0.11",
+    "expo-router": "^4.0.9",
     "expo-status-bar": "~2.0.0",
     "react": "18.3.1",
-    "react-native": "0.76.3"
+    "react-native": "0.76.3",
+    "react-native-chart-kit": "^6.12.0",
+    "react-native-svg": "^15.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
