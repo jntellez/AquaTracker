@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.heading.fontSize,
     fontWeight: theme.typography.heading.fontWeight,
     marginBottom: theme.spacing.small,
-    color: theme.colors.textPrimary, // Usamos el color de texto principal del tema
+    color: theme.colors.primary, // Usamos el color de texto principal del tema
   },
   subtitle: {
     fontSize: theme.typography.subheading.fontSize,

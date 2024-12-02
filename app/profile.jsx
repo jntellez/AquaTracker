@@ -96,7 +96,7 @@ const Profile = () => {
       <View
         style={[styles.container, { backgroundColor: theme.colors.background }]}
       >
-        <Text style={[styles.title, { color: theme.colors.textPrimary }]}>
+        <Text style={[styles.title, { color: theme.colors.primary }]}>
           Perfil de Usuario
         </Text>
 

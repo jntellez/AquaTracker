@@ -1,4 +1,15 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import {
+  saveUserInfo,
+  getUserInfo,
+  saveRecords,
+  getAllRecords,
+  addRecord,
+  addActivityToRecord,
+  removeActivityFromRecord,
+  getActivities,
+  saveActivities,
+} from "../services/storage"; // Asegúrate de tener la ruta correcta de los servicios
 
 // Crear el contexto de la store
 const WaterConsumptionContext = createContext();
@@ -15,22 +26,81 @@ export const WaterConsumptionProvider = ({ children }) => {
     dailyWaterGoal: 2, // Meta diaria de agua por defecto en litros
   });
 
-  // Función para actualizar la información del usuario
-  const saveUserInfo = (info) => {
+  // Cargar información del usuario desde AsyncStorage al inicio
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      const storedUserInfo = await getUserInfo();
+      if (storedUserInfo) {
+        setUserInfo(storedUserInfo);
+      }
+    };
+    loadUserInfo();
+  }, []);
+
+  // Función para actualizar la información del usuario y guardarla en AsyncStorage
+  const saveUserInfoToStore = async (info) => {
+    await saveUserInfo(info);
     setUserInfo(info);
   };
 
-  // Actividades diarias (registro de consumo de agua)
+  // Registros diarios de consumo de agua
   const [dailyConsumption, setDailyConsumption] = useState([]);
 
-  // Función para agregar una nueva actividad de consumo de agua
-  const addDailyActivity = (activity) => {
-    setDailyConsumption((prevState) => [...prevState, activity]);
+  // Cargar los registros desde AsyncStorage al inicio
+  useEffect(() => {
+    const loadRecords = async () => {
+      const records = await getAllRecords();
+      setDailyConsumption(records);
+    };
+    loadRecords();
+  }, []);
+
+  // Función para agregar una nueva actividad de consumo de agua a un registro específico
+  const addDailyActivity = async (recordDate, activity) => {
+    await addActivityToRecord(recordDate, activity);
+    const updatedRecords = await getAllRecords();
+    setDailyConsumption(updatedRecords);
   };
 
-  // Función para actualizar el consumo de agua por día (puedes usarla si lo necesitas)
-  const updateDailyConsumption = (newConsumption) => {
-    setDailyConsumption(newConsumption);
+  // Función para eliminar una actividad de un registro específico
+  const removeDailyActivity = async (recordDate, activityId) => {
+    await removeActivityFromRecord(recordDate, activityId);
+    const updatedRecords = await getAllRecords();
+    setDailyConsumption(updatedRecords);
+  };
+
+  // Función para agregar un nuevo registro (nuevo día de consumo)
+  const addNewRecord = async (newRecord) => {
+    await addRecord(newRecord);
+    const updatedRecords = await getAllRecords();
+    setDailyConsumption(updatedRecords);
+  };
+
+  // ** Actividades Globales (Opcional) **: Si quieres manejar las actividades globalmente fuera de los registros
+  const [activities, setActivities] = useState([]);
+
+  useEffect(() => {
+    const loadActivities = async () => {
+      const storedActivities = await getActivities();
+      setActivities(storedActivities);
+    };
+    loadActivities();
+  }, []);
+
+  // Función para agregar una nueva actividad global
+  const addNewActivity = async (activity) => {
+    const updatedActivities = [...activities, activity];
+    await saveActivities(updatedActivities);
+    setActivities(updatedActivities);
+  };
+
+  // Función para eliminar una actividad global
+  const removeGlobalActivity = async (activityId) => {
+    const updatedActivities = activities.filter(
+      (activity) => activity.id !== activityId
+    );
+    await saveActivities(updatedActivities);
+    setActivities(updatedActivities);
   };
 
   return (
@@ -38,9 +108,14 @@ export const WaterConsumptionProvider = ({ children }) => {
       value={{
         userInfo,
         dailyConsumption,
-        setDailyConsumption: updateDailyConsumption,
+        activities, // Para acceder a todas las actividades si se desea
+        setDailyConsumption,
         addDailyActivity,
-        setUserInfo: saveUserInfo,
+        removeDailyActivity,
+        addNewRecord,
+        addNewActivity, // Para manejar actividades globales
+        removeGlobalActivity, // Para eliminar actividades globales
+        setUserInfo: saveUserInfoToStore,
       }}
     >
       {children}

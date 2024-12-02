@@ -3,7 +3,7 @@
 const theme = {
   colors: {
     primary: "#4A90E2", // Azul, color principal
-    secondary: "#50E3C2", // Verde, color secundario
+    secondary: "#0CE788", // Verde, color secundario
     background: "#F5F5F5", // Fondo gris claro
     cardBackground: "#FFFFFF", // Fondo blanco para las tarjetas
     textPrimary: "#333333", // Texto principal en gris oscuro
