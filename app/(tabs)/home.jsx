@@ -1,28 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, FlatList } from "react-native";
 import theme from "../../styles/theme";
-import WaterConsumptionDailyChart from "../../components/WaterConsumptionDailyChart";
+import ConsumptionCard from "../../components/ConsumptionCard";
 import RecentActivities from "../../components/RecentActivities";
 import {
   getCurrentTotalConsumption,
+  getDailyWaterGoal,
   getRemainingConsumption,
 } from "../../services/calculations";
 import ChartSlider from "../../components/ChartSlider";
+import { useRouter } from "expo-router";
 
 export default function Home() {
   const { colors, typography, spacing } = theme;
   const [currentTotalConsumption, setCurrentTotalConsumption] = useState(0);
   const [remainingConsumption, setRemainingConsumption] = useState(0);
+  const [dailyWaterGoal, setDailyWaterGoal] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const getData = async () => {
       const currentTotalConsumptionData = await getCurrentTotalConsumption();
       const remainingConsumptionData = await getRemainingConsumption();
+      const dailyWaterGoalData = await getDailyWaterGoal();
       if (currentTotalConsumptionData) {
         setCurrentTotalConsumption(currentTotalConsumptionData);
       }
       if (remainingConsumptionData) {
         setRemainingConsumption(remainingConsumptionData);
+      }
+      if (dailyWaterGoalData) {
+        setDailyWaterGoal(dailyWaterGoalData);
       }
     };
     getData();
@@ -34,19 +42,23 @@ export default function Home() {
       title: "¡Hola, Juan!",
       subtitle: "Monitoreando tu consumo de agua",
     },
-    { type: "chartSlider", component: <ChartSlider /> },
-    { type: "recentActivities", component: <RecentActivities /> },
     {
       type: "stats",
       title: `Consumo Total de Hoy: ${currentTotalConsumption}`,
       subtitle: `Restantes para tu límite: ${remainingConsumption}`,
+      currentTotalConsumption,
+      remainingConsumption,
+      goal: dailyWaterGoal,
     },
+    { type: "chartSlider", component: <ChartSlider /> },
+    { type: "recentActivities", component: <RecentActivities /> },
+
     {
       type: "actions",
       actions: [
-        { title: "Ver Registro Diario" },
-        { title: "Registrar Actividad" },
-        { title: "Cambiar Meta" },
+        { title: "Ver Registro Diario", route: "log" },
+        { title: "Registrar Actividad", route: "createActivity" },
+        { title: "Cambiar Meta", route: "profile" },
       ],
     },
   ];
@@ -63,9 +75,21 @@ export default function Home() {
                 <Text style={[styles.title, { color: colors.primary }]}>
                   {item.title}
                 </Text>
-                <Text style={[styles.subtitle, { color: colors.secondary }]}>
+                <Text
+                  style={[styles.subtitle, { color: colors.textSecondary }]}
+                >
                   {item.subtitle}
                 </Text>
+              </View>
+            );
+          case "stats":
+            return (
+              <View style={styles.containerCard}>
+                <ConsumptionCard
+                  currentTotalConsumption={item.currentTotalConsumption}
+                  remainingConsumption={item.remainingConsumption}
+                  goal={item.goal}
+                />
               </View>
             );
           case "chartSlider":
@@ -74,19 +98,6 @@ export default function Home() {
             );
           case "recentActivities":
             return <View style={styles.containerCard}>{item.component}</View>;
-          case "stats":
-            return (
-              <View style={[styles.statsCard, styles.containerCard]}>
-                <Text style={[styles.statTitle, { color: colors.primary }]}>
-                  {item.title}
-                </Text>
-                <Text
-                  style={[styles.statText, { color: colors.textSecondary }]}
-                >
-                  {item.subtitle}
-                </Text>
-              </View>
-            );
           case "actions":
             return (
               <View style={styles.actions}>
@@ -95,7 +106,7 @@ export default function Home() {
                     key={index}
                     title={action.title}
                     color={colors.buttonBackground}
-                    onPress={() => {}}
+                    onPress={() => router.push(action.route)}
                   />
                 ))}
               </View>
@@ -117,7 +128,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    marginBottom: theme.spacing.large,
+    marginVertical: theme.spacing.medium,
   },
   title: {
     fontSize: theme.typography.heading.fontSize,

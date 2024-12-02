@@ -52,8 +52,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.medium,
   },
   title: {
-    fontSize: theme.typography.subheading.fontSize,
-    fontWeight: theme.typography.body.fontWeight,
+    ...theme.typography.subheading,
     marginBottom: theme.spacing.medium,
   },
   activityItem: {

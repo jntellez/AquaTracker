@@ -30,7 +30,7 @@ const theme = {
       color: "#333333",
     },
     caption: {
-      fontSize: 14,
+      fontSize: 12,
       fontWeight: "300", // Ligera
       color: "#8B8B8B",
     },

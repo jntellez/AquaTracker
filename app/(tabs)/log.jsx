@@ -1,27 +1,83 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import theme from "../../styles/theme";
+import LogHeader from "../../components/log/LogHeader";
+import { useRouter } from "expo-router";
+import { getLastRecord } from "../../services/storage";
+import ActivityCard from "../../components/log/ActivityCard";
 
-export default function Log() {
-  const { colors } = theme;
+const AddWaterIntakeScreen = () => {
+  const [activities, setActivities] = useState([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getLastRecord();
+      if (data && data.activities.length > 0) {
+        setActivities(data.activities);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.text, { color: colors.primary }]}>
-        Esta es la pantalla de Registro
-      </Text>
+    <View style={styles.container}>
+      {/* Header */}
+      <LogHeader />
+
+      {/* Lista de actividades */}
+      <FlatList
+        data={activities}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContainer}
+        ListHeaderComponent={
+          <Text style={styles.sectionTitle}>Actividades Registradas</Text>
+        }
+        renderItem={({ item }) => <ActivityCard data={item} />}
+      />
+
+      {/* Botón para añadir actividad */}
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.push("ActivitiesList")}
+      >
+        <Text style={styles.addButtonText}>Añadir Actividad</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: theme.colors.background,
   },
-  text: {
-    fontSize: 20,
+  listContainer: {
+    padding: theme.spacing.medium,
+  },
+  sectionTitle: {
+    ...theme.typography.subheading,
+    color: theme.colors.primary,
+    marginBottom: theme.spacing.medium,
+  },
+  addButton: {
+    margin: theme.spacing.medium,
+    padding: theme.spacing.medium,
+    backgroundColor: theme.colors.buttonBackground,
+    alignItems: "center",
+    borderRadius: theme.borderRadius.small,
+  },
+  addButtonText: {
+    fontSize: theme.typography.body.fontSize,
+    color: theme.colors.buttonText,
     fontWeight: "bold",
   },
 });
+
+export default AddWaterIntakeScreen;
