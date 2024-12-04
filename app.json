@@ -3,6 +3,7 @@
     "name": "AquaTracker",
     "slug": "AquaTracker",
     "version": "1.0.0",
+    "scheme": "aquatracker",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

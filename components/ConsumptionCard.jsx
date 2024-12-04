@@ -4,48 +4,58 @@ import { ProgressChart } from "react-native-chart-kit";
 import theme from "../styles/theme";
 
 const ConsumptionCard = ({
-  currentTotalConsumption,
-  remainingConsumption,
-  goal,
+  currentTotalConsumption = 0,
+  remainingConsumption = 0,
+  goal = 1, // Evita división por cero
 }) => {
-  const progress = currentTotalConsumption / goal;
+  const progress =
+    goal > 0 && currentTotalConsumption >= 0
+      ? currentTotalConsumption / goal
+      : 0;
+
+  const remaining = goal - currentTotalConsumption;
+  const validRemainingConsumption = remaining >= 0 ? remaining : 0;
+
+  console.log({
+    currentTotalConsumption,
+    validRemainingConsumption,
+    goal,
+    progress,
+  });
 
   return (
     <View style={styles.card}>
-      {/* Título */}
       <Text style={styles.title}>Consumo actual</Text>
       <Text style={styles.subtitle}>Restante = Limite - Consumido</Text>
 
-      {/* Contenedor principal que divide la gráfica y los detalles */}
       <View style={styles.contentContainer}>
-        {/* Gráfico circular */}
         <View style={styles.chartContainer}>
           <ProgressChart
             data={{
-              data: [progress], // Progreso actual como porcentaje
+              data: [progress >= 0 && progress <= 1 ? progress : 0],
             }}
-            width={Dimensions.get("window").width * 0.6} // Mayor ancho
+            width={Dimensions.get("window").width * 0.6}
             height={200}
             strokeWidth={10}
             radius={80}
             chartConfig={{
               backgroundGradientFrom: theme.colors.cardBackground,
               backgroundGradientTo: theme.colors.cardBackground,
-              color: (opacity = 1) => `rgba(74, 144, 226, ${opacity})`, // Color principal del progreso
+              color: (opacity = 1) => `rgba(74, 144, 226, ${opacity})`,
               labelColor: () => theme.colors.textSecondary,
             }}
-            hideLegend={true} // Ocultar leyenda adicional
+            hideLegend={true}
             style={styles.chart}
           />
 
-          {/* Texto en el centro del gráfico */}
           <View style={styles.centerText}>
-            <Text style={styles.remainingValue}>{remainingConsumption}</Text>
+            <Text style={styles.remainingValue}>
+              {validRemainingConsumption}
+            </Text>
             <Text style={styles.remainingLabel}>Restante</Text>
           </View>
         </View>
 
-        {/* Detalles de consumo */}
         <View style={styles.details}>
           <View style={styles.detailItem}>
             <Text style={styles.detailTitle}>Limite</Text>
@@ -57,7 +67,9 @@ const ConsumptionCard = ({
           </View>
           <View style={styles.detailItem}>
             <Text style={styles.detailTitle}>Restante</Text>
-            <Text style={styles.detailValue}>{remainingConsumption} L</Text>
+            <Text style={styles.detailValue}>
+              {validRemainingConsumption} L
+            </Text>
           </View>
         </View>
       </View>

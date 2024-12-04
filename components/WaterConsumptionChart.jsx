@@ -23,6 +23,14 @@ const WaterConsumptionChart = () => {
   // Array con las abreviaturas de los días de la semana
   const dayAbbreviations = ["D", "L", "M", "X", "J", "V", "S"];
 
+  if (records.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text>No hay datos para el gráfico</Text>
+      </View>
+    );
+  }
+
   // Extraer etiquetas (días de la semana) y datos (consumo)
   const labels = records.map(
     (entry) => dayAbbreviations[new Date(entry.date).getDay()]
