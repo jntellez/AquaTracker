@@ -28,8 +28,13 @@ const WaterConsumptionDailyChart = () => {
   }
 
   const labels = activities.map((activity) =>
-    new Date(activity.time).toLocaleTimeString()
+    new Date(activity.time).toLocaleTimeString("es-MX", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
   );
+
   const data = activities.map((activity) => activity.amount);
 
   return (

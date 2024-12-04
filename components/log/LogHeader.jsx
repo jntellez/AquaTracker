@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
   header: {
     padding: theme.spacing.medium,
     backgroundColor: theme.colors.cardBackground,
-    borderRadius: theme.borderRadius.medium,
   },
   title: {
     ...theme.typography.body,

@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { useWaterConsumption } from "../../store/WaterConsumptionStore"; // Acceder a la store
-import WaterConsumptionChart from "../../components/WaterConsumptionChart";
 import theme from "../../styles/theme"; // Importar el tema
 import ChartSlider from "../../components/ChartSlider";
 import RecentActivities from "../../components/RecentActivities";
@@ -17,15 +16,42 @@ const Stats = () => {
       component: (
         <View style={styles.cardUserInfo}>
           <Text style={styles.cardTitle}>Tu información</Text>
-          <Text style={[styles.info, { color: theme.colors.textPrimary }]}>
-            Nombre: {userInfo.name}
-          </Text>
-          <Text style={[styles.info, { color: theme.colors.textPrimary }]}>
-            Edad: {userInfo.age}
-          </Text>
-          <Text style={[styles.info, { color: theme.colors.textPrimary }]}>
-            Limite diario: {userInfo.dailyWaterGoal} Litros
-          </Text>
+          <View style={styles.infoRow}>
+            <Text
+              style={[styles.infoLabel, { color: theme.colors.textSecondary }]}
+            >
+              Nombre:{" "}
+            </Text>
+            <Text
+              style={[styles.infoValue, { color: theme.colors.textPrimary }]}
+            >
+              {userInfo.name}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text
+              style={[styles.infoLabel, { color: theme.colors.textSecondary }]}
+            >
+              Edad:{" "}
+            </Text>
+            <Text
+              style={[styles.infoValue, { color: theme.colors.textPrimary }]}
+            >
+              {userInfo.age}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text
+              style={[styles.infoLabel, { color: theme.colors.textSecondary }]}
+            >
+              Límite diario:{" "}
+            </Text>
+            <Text
+              style={[styles.infoValue, { color: theme.colors.textPrimary }]}
+            >
+              {userInfo.dailyWaterGoal} Litros
+            </Text>
+          </View>
         </View>
       ),
     },
@@ -85,9 +111,16 @@ const styles = StyleSheet.create({
     marginVertical: theme.spacing.medium,
     textAlign: "center",
   },
-  info: {
-    fontSize: theme.typography.body.fontSize,
+  infoRow: {
+    flexDirection: "row",
     marginBottom: theme.spacing.small,
+    alignItems: "center",
+  },
+  infoLabel: {
+    ...theme.typography.body,
+  },
+  infoValue: {
+    ...theme.typography.body,
   },
 });
 

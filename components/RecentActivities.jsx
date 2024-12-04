@@ -26,10 +26,17 @@ const RecentActivities = () => {
           data={activities}
           renderItem={({ item }) => (
             <View style={styles.activityItem}>
-              <Text style={styles.activityName}>{item.name}</Text>
-              <Text style={styles.activityText}>
-                {new Date(item.time).toLocaleTimeString()}: {item.amount}L
-              </Text>
+              <View>
+                <Text style={styles.activityName}>{item.name}</Text>
+                <Text style={styles.activityTime}>
+                  {new Date(item.time).toLocaleTimeString("es-MX", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </Text>
+              </View>
+              <Text style={styles.activityAmount}>{item.amount} L</Text>
             </View>
           )}
           keyExtractor={(item) => item.id.toString()}
@@ -56,6 +63,8 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.medium,
   },
   activityItem: {
+    flexDirection: "row", // Alinea los hijos horizontalmente
+    justifyContent: "space-between", // Espacia los elementos entre sí
     marginBottom: theme.spacing.medium,
   },
   activityName: {
@@ -63,9 +72,14 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.subheading.fontWeight,
     color: theme.colors.textPrimary,
   },
-  activityText: {
-    fontSize: theme.typography.body.fontSize,
+  activityTime: {
+    fontSize: theme.typography.caption.fontSize,
     color: theme.colors.textSecondary,
+  },
+  activityAmount: {
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    color: theme.colors.textPrimary,
   },
   noActivitiesText: {
     fontSize: theme.typography.body.fontSize,
