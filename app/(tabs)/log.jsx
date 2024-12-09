@@ -45,7 +45,7 @@ const AddWaterIntakeScreen = () => {
       {/* Botón para añadir actividad */}
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("ActivitiesList")}
+        onPress={() => router.push("selectActivity")}
       >
         <Text style={styles.addButtonText}>Añadir Actividad</Text>
       </TouchableOpacity>
